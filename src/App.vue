@@ -1,14 +1,36 @@
 <script>
+import axios from "axios";
 export default {
   data() {
     return {
       city: "",
       error: "",
+      info: null,
     };
   },
   computed: {
     cityName() {
       return "<< " + this.city + " >>";
+    },
+    showTemp() {
+      return this.info && this.info.main
+        ? "Температура: " + this.info.main.temp
+        : "";
+    },
+    showFeelsLike() {
+      return this.info && this.info.main
+        ? "Ощущается как: " + this.info.main.feels_like
+        : "";
+    },
+    showMinTemp() {
+      return this.info && this.info.main
+        ? "Минимальная температура: " + this.info.main.temp_min
+        : "";
+    },
+    showMaxTemp() {
+      return this.info && this.info.main
+        ? "Максимальная температура: " + this.info.main.temp_max
+        : "";
     },
   },
   methods: {
@@ -18,6 +40,12 @@ export default {
         return false;
       }
       this.error = "";
+
+      axios
+        .get(
+          `https://api.openweathermap.org/data/2.5/weather?q=${this.city}&units=metric&appid=2b2927141fd3188347611980f6e45e2e`
+        )
+        .then((res) => (this.info = res.data));
     },
   },
 };
@@ -40,6 +68,13 @@ export default {
       <button class="button" @click="getWeather()">Get weather</button>
     </div>
     <p class="error">{{ error }}</p>
+
+    <div v-show="info != null">
+      <p>{{ showTemp }}</p>
+      <p>{{ showFeelsLike }}</p>
+      <p>{{ showMinTemp }}</p>
+      <p>{{ showMaxTemp }}</p>
+    </div>
   </div>
 </template>
 
