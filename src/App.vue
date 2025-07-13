@@ -3,7 +3,22 @@ export default {
   data() {
     return {
       city: "",
+      error: "",
     };
+  },
+  computed: {
+    cityName() {
+      return "<< " + this.city + " >>";
+    },
+  },
+  methods: {
+    getWeather() {
+      if (this.city.trim().length < 2) {
+        this.error = "Нужно название больше одного символа.";
+        return false;
+      }
+      this.error = "";
+    },
   },
 };
 </script>
@@ -12,7 +27,7 @@ export default {
   <div class="wrapper">
     <h1 class="title">Weather Application</h1>
     <p class="subtitle">
-      Learn about weather in {{ city == "" ? "your city." : city }}
+      Learn about weather in {{ city == "" ? "your city." : cityName }}
     </p>
     <div class="row">
       <input
@@ -22,12 +37,16 @@ export default {
         placeholder="Enter city"
         id="inputCity"
       />
-      <button class="button" type="button">Get weather</button>
+      <button class="button" @click="getWeather()">Get weather</button>
     </div>
+    <p class="error">{{ error }}</p>
   </div>
 </template>
 
 <style scoped>
+.error {
+  color: #d03939;
+}
 .wrapper {
   width: 900px;
   height: 500px;
